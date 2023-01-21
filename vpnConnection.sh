@@ -14,7 +14,7 @@ fi
 case $option in
 
     "-on")#case1.
-    check=$(sudo openvpn --config /home/unknown/Downloads/lab_unkn0wn1122.ovpn --daemon > /dev/null 2>&1)#Change this with the route to your path.
+    check=$(sudo openvpn --config /home/unknown/Downloads/lab_unkn0wn1122.ovpn --daemon > /dev/null 2>&1)
     echo "[*]Starting connection..."
     sleep 1
     if [ $? == 0 ]; then
