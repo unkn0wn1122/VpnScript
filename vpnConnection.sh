@@ -33,6 +33,30 @@ function Connect() {
 	ovpnFile=$(find / -type f -name 'lab_*.ovpn' 2>/dev/null &)
 	psId1=$!
 	wait $psId1
+  command -v openvpn >/dev/null 2>&1 || {
+    echo -e "\n${redColour}[!] I requiere "openvpn" package...\n${endColour}";
+    echo -e "${yellowColour}[*]${endColour} ${grayColour}do you want to install this package -> ${endColour}${grayColour}"${endColour}${redColour}openvpn${endColour}${grayColour}"${endColour}"
+    read -r -p "Are you sure? [y/N] :" response
+    response=${response,,}
+    if [[ "$response" =~ ^(yes|y)$ ]]; then
+      if [[ -x "$(command -v apt)" ]]; then
+        echo "installing..."
+        installed=$(sudo apt install openvpn -y)
+        psId2=$!
+        wait $psId2
+        echo -e "\n${purpleColour}[*] Succesfully installed in debian based!${endColour}\n"
+      elif [[ -x "$(command -v pacman)" ]]; then
+        echo "installing..."
+        isntalled=$(sudo pacman -Sy openvpn)
+        ps2Id=$!
+        wait $psId2
+        echo -e "\n${purpleColour}[*] Succesfully installed in arch based!${endColour}\n"
+      fi
+    else
+      echo -e "\n${redColour}[!] No package installed... aborting!\n ${endColour}"
+      exit 1
+    fi
+  }
 	echo -e "\n ${yellowColour}[+]${endColour} ${grayColour}Starting connection...."${endColour}
 	sleep 1.5
 	check=$(
