@@ -1,6 +1,6 @@
 #!/bin/bash
 #autor: Unkn0wn1122
-
+#helper: liandd
 #Colours
 greenColour="\e[0;32m"
 endColour="\033[0m\e[0m"
