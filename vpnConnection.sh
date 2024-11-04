@@ -82,6 +82,8 @@ function connect() {
       			exit 1
     	fi
   	}
+	sleep 1.1
+	clear
 	echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Starting connection....${endColour}"
 	sleep 1.5
 	check=$(
@@ -104,6 +106,10 @@ function disconnect() {
 	if [ "$check" -eq 0 ]; then
 		echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Turning off connection....${endColour}\n"
 		sleep 1.5
+		checker=$(ip link | grep 'tun0')
+		if [[ "$?" -eq 0 ]]; then
+			sudo ip link delete tun0
+		fi
 	else
 		echo -e "\n${redColour}[!] There is not an openvpn process running...${endColour}\n"
 	fi
