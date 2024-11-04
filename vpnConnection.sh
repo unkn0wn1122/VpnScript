@@ -44,7 +44,7 @@ function checkerForTun() {
     			psId3=$!
     			wait $psId3
   		else
-    			echo -e "\n\n${yellowColour}[+]${endColour} ${grayColour}Checker done...${endColour}"
+    			echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Checker done...${endColour}"
   		fi
 	fi
 }
@@ -85,13 +85,13 @@ function connect() {
 	echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Starting connection....${endColour}"
 	sleep 1.5
 	check=$(
-		sudo openvpn --config $ovpnFile --daemon >/dev/null 2>&1
+		sudo openvpn --config $ovpnFile --dev tun0 --daemon >/dev/null 2>&1
 		echo $?
 	)
 	if [ "$check" -eq 0 ]; then
-		echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Established connection${endColour}"
+		echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Established connection${endColour}\n"
 	else
-		echo -e "\n${redColour}[!] Connection could not be established${endColour}"
+		echo -e "\n${redColour}[!] Connection could not be established${endColour}\n"
 	fi
 }
 
@@ -102,10 +102,10 @@ function disconnect() {
 		echo $?
 	)
 	if [ "$check" -eq 0 ]; then
-		echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Turning off connection....${endColour}"
+		echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Turning off connection....${endColour}\n"
 		sleep 1.5
 	else
-		echo -e "\n${redColour}[!] There is not an openvpn process running...${endColour}"
+		echo -e "\n${redColour}[!] There is not an openvpn process running...${endColour}\n"
 	fi
 }
 
