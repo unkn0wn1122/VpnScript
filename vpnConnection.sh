@@ -27,10 +27,13 @@ function helpPanel() {
 
     ${purpleColour}-d${endColour} ${yellowColour}[*]${endColour} ${grayColour}Close Connection${endColour}
 
+    ${purpleColour}-i${endColour} ${yellowColour}[*]${endColour} ${grayColour}Copy VPN ip to clipboard${endColour}
+
     ${purpleColour}-h${endColour} ${yellowColour}[*]${endColour} ${grayColour}This help panel${endColour}\n\n"
 }
 
 function checkerForTun() {
+  clear
 	echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Starting checker for tun Interface...${endColour}"
 	ip_check=$(ip -4 -o addr show | grep 'tun' | grep '10\.')
 	if [[ -n "$ip_check" ]]; then
@@ -60,7 +63,7 @@ function connect() {
     		read -r -p "Are you sure? [y/N] :" response
     		response=${response,,}
     		if [[ "$response" =~ ^(yes|y)$ ]]; then
-      			if [[ -x "$(command -v apt)" ]]; then
+ if [[ -x "$(command -v apt)" ]]; then
         			echo -e "\n${blueColour}[+] installing...${endColour}"
         			installed=$(sudo apt install openvpn -y)
         			psId2=$!
@@ -104,6 +107,7 @@ function disconnect() {
 		echo $?
 	)
 	if [ "$check" -eq 0 ]; then
+    clear
 		echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Turning off connection....${endColour}\n"
 		sleep 1.5
 		checker=$(ip link | grep 'tun0')
@@ -111,17 +115,34 @@ function disconnect() {
 			sudo ip link delete tun0
 		fi
 	else
+    clear
 		echo -e "\n${redColour}[!] There is not an openvpn process running...${endColour}\n"
 	fi
 }
 
+function copyIp() {
+  checker=$(ip link | grep 'tun')
+    if [[ "$?" -eq 1 ]]; then
+      clear
+      echo -e "\n${yellowColour}[!]${endColour} ${grayColour}Script is not running...${endColour}\n"
+      echo -e "${redColour}[!] Aborting!${endColour}"
+      exit 1
+    else
+      ip=$(ifconfig | grep "inet 10" | awk '{print $2}')
+      clear
+      echo $ip | tr -d '\n' | xclip -sel clip
+      echo -e "\n${blueColour}[+] IP address copied to clipboard${endcolour}\n"
+    fi
+}
+
 declare -i parameter_counter=0
 
-while getopts "cdh:" arg; do
+while getopts "cdih:" arg; do
 	case $arg in
 	c) let parameter_counter+=1 ;;
 	d) let parameter_counter+=2 ;;
-	h) let parameter_counter+=3 ;;
+  i) let parameter_counter+=3 ;;
+	h) let parameter_counter+=4 ;;
 	esac
 done
 
@@ -130,7 +151,9 @@ if [ $parameter_counter -eq 1 ]; then
 elif [ $parameter_counter -eq 2 ]; then
 	disconnect
 elif [ $parameter_counter -eq 3 ]; then
-	helpPanel
+	copyIp
+elif [ $parameter_counter -eq 4]; then
+  helpPanel
 else
 	helpPanel
 fi
